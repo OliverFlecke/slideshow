@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "swiftlogger",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/OliverFlecke/SwiftLogger",
+      "state" : {
+        "branch" : "main",
+        "revision" : "608038e0d7107f56e177669a97eb4892c57252fb"
+      }
+    }
+  ],
+  "version" : 2
+}

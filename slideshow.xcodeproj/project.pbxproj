@@ -21,6 +21,10 @@
 		A7F4D0BF2827D3FC00404D36 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F4D0912827D3F900404D36 /* Persistence.swift */; };
 		A7F4D0C02827D3FC00404D36 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A7F4D0922827D3FC00404D36 /* Assets.xcassets */; };
 		A7F4D0C12827D3FC00404D36 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A7F4D0922827D3FC00404D36 /* Assets.xcassets */; };
+		A7F4D0D12827D46E00404D36 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F4D0D02827D46E00404D36 /* MainView.swift */; };
+		A7F4D0D22827D46E00404D36 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F4D0D02827D46E00404D36 /* MainView.swift */; };
+		A7F4D0D52827D55C00404D36 /* SwiftLogger in Frameworks */ = {isa = PBXBuildFile; productRef = A7F4D0D42827D55C00404D36 /* SwiftLogger */; };
+		A7F4D0D82827D5E000404D36 /* SwiftLogger in Frameworks */ = {isa = PBXBuildFile; productRef = A7F4D0D72827D5E000404D36 /* SwiftLogger */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +59,7 @@
 		A7F4D0B02827D3FC00404D36 /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7F4D0B42827D3FC00404D36 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		A7F4D0B62827D3FC00404D36 /* Tests_macOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOSLaunchTests.swift; sourceTree = "<group>"; };
+		A7F4D0D02827D46E00404D36 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A7F4D0D52827D55C00404D36 /* SwiftLogger in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,6 +75,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A7F4D0D82827D5E000404D36 /* SwiftLogger in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,6 +104,7 @@
 				A7F4D0A72827D3FC00404D36 /* Tests iOS */,
 				A7F4D0B32827D3FC00404D36 /* Tests macOS */,
 				A7F4D0982827D3FC00404D36 /* Products */,
+				A7F4D0D62827D5E000404D36 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -108,6 +116,7 @@
 				A7F4D0912827D3F900404D36 /* Persistence.swift */,
 				A7F4D0922827D3FC00404D36 /* Assets.xcassets */,
 				A7F4D08D2827D3F900404D36 /* slideshow.xcdatamodeld */,
+				A7F4D0D02827D46E00404D36 /* MainView.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -149,6 +158,13 @@
 			path = "Tests macOS";
 			sourceTree = "<group>";
 		};
+		A7F4D0D62827D5E000404D36 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -165,6 +181,9 @@
 			dependencies = (
 			);
 			name = "slideshow (iOS)";
+			packageProductDependencies = (
+				A7F4D0D42827D55C00404D36 /* SwiftLogger */,
+			);
 			productName = "slideshow (iOS)";
 			productReference = A7F4D0972827D3FC00404D36 /* slideshow.app */;
 			productType = "com.apple.product-type.application";
@@ -182,6 +201,9 @@
 			dependencies = (
 			);
 			name = "slideshow (macOS)";
+			packageProductDependencies = (
+				A7F4D0D72827D5E000404D36 /* SwiftLogger */,
+			);
 			productName = "slideshow (macOS)";
 			productReference = A7F4D09D2827D3FC00404D36 /* slideshow.app */;
 			productType = "com.apple.product-type.application";
@@ -257,6 +279,9 @@
 				Base,
 			);
 			mainGroup = A7F4D0872827D3F900404D36;
+			packageReferences = (
+				A7F4D0D32827D55C00404D36 /* XCRemoteSwiftPackageReference "SwiftLogger" */,
+			);
 			productRefGroup = A7F4D0982827D3FC00404D36 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -310,6 +335,7 @@
 				A7F4D0BA2827D3FC00404D36 /* slideshowApp.swift in Sources */,
 				A7F4D0BE2827D3FC00404D36 /* Persistence.swift in Sources */,
 				A7F4D0B82827D3FC00404D36 /* slideshow.xcdatamodeld in Sources */,
+				A7F4D0D12827D46E00404D36 /* MainView.swift in Sources */,
 				A7F4D0BC2827D3FC00404D36 /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -321,6 +347,7 @@
 				A7F4D0BB2827D3FC00404D36 /* slideshowApp.swift in Sources */,
 				A7F4D0BF2827D3FC00404D36 /* Persistence.swift in Sources */,
 				A7F4D0B92827D3FC00404D36 /* slideshow.xcdatamodeld in Sources */,
+				A7F4D0D22827D46E00404D36 /* MainView.swift in Sources */,
 				A7F4D0BD2827D3FC00404D36 /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -713,6 +740,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A7F4D0D32827D55C00404D36 /* XCRemoteSwiftPackageReference "SwiftLogger" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/OliverFlecke/SwiftLogger";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A7F4D0D42827D55C00404D36 /* SwiftLogger */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A7F4D0D32827D55C00404D36 /* XCRemoteSwiftPackageReference "SwiftLogger" */;
+			productName = SwiftLogger;
+		};
+		A7F4D0D72827D5E000404D36 /* SwiftLogger */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A7F4D0D32827D55C00404D36 /* XCRemoteSwiftPackageReference "SwiftLogger" */;
+			productName = SwiftLogger;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		A7F4D08D2827D3F900404D36 /* slideshow.xcdatamodeld */ = {

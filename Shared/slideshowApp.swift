@@ -1,11 +1,7 @@
-//
-//  slideshowApp.swift
-//  Shared
-//
-//  Created by Oliver Fleckenstein on 08/05/2022.
-//
-
 import SwiftUI
+import SwiftLogger
+
+let logger: Logger = SimpleLogger(level: .debug)
 
 @main
 struct slideshowApp: App {
@@ -13,7 +9,7 @@ struct slideshowApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
