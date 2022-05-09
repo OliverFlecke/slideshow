@@ -4,7 +4,7 @@ import AVKit
 struct SlideView: View {
     @ObservedObject private var viewModel: ViewModel
     
-    init(media: [URL]) {
+    init(media: [MediaElement]) {
         viewModel = ViewModel(media: media)
     }
     
@@ -27,11 +27,11 @@ struct SlideView: View {
     var mediaView: some View {
         Group {
             if let current = viewModel.currentMedia {
-                if current.pathExtension == "mp4" {
+                if current.url.pathExtension == "mp4" {
                     VideoPlayer(player: viewModel.player)
                 }
                 else {
-                    Image(nsImage: NSImage(byReferencing: current))
+                    Image(nsImage: NSImage(byReferencing: current.url))
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                 }
@@ -55,12 +55,12 @@ struct SlideView: View {
     
     private class ViewModel: ObservableObject {
         let player = AVQueuePlayer()
-        @Published var currentMedia: URL?
+        @Published var currentMedia: MediaElement?
         
-        private let media: [URL]
+        private let media: [MediaElement]
         private var index = 0
         
-        init(media: [URL]) {
+        init(media: [MediaElement]) {
             self.media = media
             
             if media.count > 0 {
@@ -89,8 +89,8 @@ struct SlideView: View {
             self.currentMedia = media[index]
             guard let current = self.currentMedia else { return }
             
-            if current.pathExtension == "mp4" {
-                player.insert(AVPlayerItem(url: current), after: nil)
+            if current.url.pathExtension == "mp4" {
+                player.insert(AVPlayerItem(url: current.url), after: nil)
             }
         }
         

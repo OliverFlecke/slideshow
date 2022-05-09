@@ -3,7 +3,6 @@ import SwiftUI
 struct MainView: View {
     @State private var showFileMenu = false
     @State private var directory: URL?
-//    @State private var media: [URL]?
     
     var body: some View {
         Group {
@@ -24,17 +23,17 @@ struct MainView: View {
                 logger.error(error, message: "Unable to get files")
             case .success(let directory):
                 self.directory = directory
-//                self.media = enumerateFiles(directory)
             }
         }
     }
     
-    private func enumerateFiles(_ directory: URL) -> [URL] {
+    private func enumerateFiles(_ directory: URL) -> [MediaElement] {
         return FileManager.default
             .enumerator(at: directory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles])?
-            .filter { f in f is NSURL }
-            .map { f in (f as! NSURL).absoluteURL! }
+            .filter { url in url is NSURL }
+            .map { url in (url as! NSURL).absoluteURL! }
             .filter(isImage)
+            .map { url in MediaElement(url) }
             .shuffled() ?? []
     }
     
