@@ -2,12 +2,13 @@ import SwiftUI
 
 struct MainView: View {
     @State private var showFileMenu = false
-    @State private var media: [URL]?
+    @State private var directory: URL?
+//    @State private var media: [URL]?
     
     var body: some View {
         Group {
-            if let media = media {
-                SlideView(media: media)
+            if let directory = directory {
+                SlideView(media: enumerateFiles(directory))
             }
             else {
                 Button("Choose directory") {
@@ -22,7 +23,8 @@ struct MainView: View {
             case .failure(let error):
                 logger.error(error, message: "Unable to get files")
             case .success(let directory):
-                self.media = enumerateFiles(directory)
+                self.directory = directory
+//                self.media = enumerateFiles(directory)
             }
         }
     }

@@ -2,20 +2,15 @@ import SwiftUI
 import AVKit
 
 struct SlideView: View {
-    var media: [URL]
-    
-    @State private var index = 0
-    @State private var player = AVQueuePlayer()
+    @ObservedObject private var viewModel: ViewModel
     
     init(media: [URL]) {
-        self.media = media
-        
-        setupVideoPlayer()
+        viewModel = ViewModel(media: media)
     }
     
     var body: some View {
         ZStack {
-            if media.count <= 0 {
+            if viewModel.currentMedia == nil {
                 noMediaView
             }
             else {
@@ -31,63 +26,83 @@ struct SlideView: View {
     
     var mediaView: some View {
         Group {
-            if media[index].pathExtension == "mp4" {
-                VideoPlayer(player: player)
-                    .onAppear {
-                        player.play()
-                    }
-            }
-            else {
-                Image(nsImage: NSImage(byReferencing: media[index]))
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
+            if let current = viewModel.currentMedia {
+                if current.pathExtension == "mp4" {
+                    VideoPlayer(player: viewModel.player)
+                }
+                else {
+                    Image(nsImage: NSImage(byReferencing: current))
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                }
             }
         }
     }
     
     var controlOverlayView: some View {
         HStack {
-            Button(action: {
-                index = modulus(index - 1, media.count)
-                updateMedia()
-            }, label: { Image(systemName: "chevron.left") })
+            Button(action: viewModel.previousItem, label: { Image(systemName: "chevron.left") })
+            .padding()
             .keyboardShortcut(.leftArrow, modifiers: [])
                 
             Spacer()
             
-            Button(action: {
-//                index = Int.random(in: 0...media.count)
-                index = modulus(index + 1, media.count)
-                updateMedia()
-            }, label: { Image(systemName: "chevron.right") })
+            Button(action: viewModel.nextItem, label: { Image(systemName: "chevron.right") })
+            .padding()
             .keyboardShortcut(.rightArrow, modifiers: [])
         }
     }
     
-    private func updateMedia() {
-        player.removeAllItems()
-        if media[index].pathExtension == "mp4" {
-            player.insert(AVPlayerItem(url: media[index]), after: nil)
-        }
-    }
-    
-    private func setupVideoPlayer() {
-        player.volume = 0.5
-        player.play()
+    private class ViewModel: ObservableObject {
+        let player = AVQueuePlayer()
+        @Published var currentMedia: URL?
         
-        NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: nil, queue: nil) { notification in
-            let currentItem = notification.object as? AVPlayerItem
-            if let currentItem = currentItem {
-                player.seek(to: .zero) // set the current player item to beginning
-                player.advanceToNextItem() // move to next video manually
-                player.insert(currentItem, after: nil) // add it to the end of the queue
+        private let media: [URL]
+        private var index = 0
+        
+        init(media: [URL]) {
+            self.media = media
+            
+            if media.count > 0 {
+                self.currentMedia = media[0]
+            }
+            
+            setupVideoPlayer()
+        }
+        
+        private func setupVideoPlayer() {
+            player.volume = 0.5
+            player.play()
+            
+            NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: nil, queue: nil) { [self] notification in
+                let currentItem = notification.object as? AVPlayerItem
+                if let currentItem = currentItem {
+                    player.seek(to: .zero)
+                    player.advanceToNextItem()
+                    player.insert(currentItem, after: nil)
+                }
             }
         }
-    }
-    
-    private func modulus(_ k: Int, _ n: Int) -> Int {
-        let r = k % n
-        return r < 0 ? r + n : r
+        
+        private func updateMedia() {
+            player.removeAllItems()
+            self.currentMedia = media[index]
+            guard let current = self.currentMedia else { return }
+            
+            if current.pathExtension == "mp4" {
+                player.insert(AVPlayerItem(url: current), after: nil)
+            }
+        }
+        
+        func nextItem() {
+            index = Math.modulus(index + 1, media.count)
+            updateMedia()
+        }
+        
+        func previousItem() {
+            index = Math.modulus(index - 1, media.count)
+            updateMedia()
+        }
     }
 }
 
