@@ -17,15 +17,30 @@ struct MainView: View {
         }
     }
     
+    var emptyView: some View {
+        Button("Change directory") {
+            showFileMenu = true
+        }
+    }
+    
     var body: some View {
         Group {
             if viewModel.media.isEmpty {
-                Button("Choose directory") {
-                    showFileMenu = true
-                }
+                emptyView
             }
             else {
-                SlideView(media: viewModel.media)
+                ZStack {
+                    SlideView(media: viewModel.media)
+                    
+                    VStack {
+                        Spacer()
+                        HStack {
+                            Spacer()
+                            emptyView
+                                .padding()
+                        }
+                    }
+                }
             }
         }
         .frame(minWidth: 200, maxWidth: .infinity, minHeight: 200, maxHeight: .infinity)
