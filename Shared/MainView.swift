@@ -33,12 +33,12 @@ struct MainView: View {
                     SlideView(media: viewModel.media)
                     
                     VStack {
-                        Spacer()
                         HStack {
                             Spacer()
                             emptyView
                                 .padding()
                         }
+                        Spacer()
                     }
                 }
             }

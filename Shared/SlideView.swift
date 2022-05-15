@@ -41,13 +41,19 @@ struct SlideView: View {
     
     var controlOverlayView: some View {
         HStack {
-            Button(action: viewModel.previousItem, label: { Image(systemName: "chevron.left") })
+            Button(action: {
+                viewModel.resetTimer()
+                viewModel.previousItem()
+            }, label: { Image(systemName: "chevron.left") })
             .padding()
             .keyboardShortcut(.leftArrow, modifiers: [])
                 
             Spacer()
             
-            Button(action: viewModel.nextItem, label: { Image(systemName: "chevron.right") })
+            Button(action: {
+                viewModel.resetTimer()
+                viewModel.nextItem()
+            }, label: { Image(systemName: "chevron.right") })
             .padding()
             .keyboardShortcut(.rightArrow, modifiers: [])
         }
@@ -56,18 +62,30 @@ struct SlideView: View {
     private class ViewModel: ObservableObject {
         let player = AVQueuePlayer()
         @Published var currentMedia: MediaElement?
+        @Published var timerInterval: TimeInterval = TimeInterval(5)
         
         private let media: [MediaElement]
         private var index = 0
+        private var timer: Timer?
         
         init(media: [MediaElement]) {
             self.media = media
-            
-            if media.count > 0 {
-                self.currentMedia = media[0]
-            }
-            
             setupVideoPlayer()
+            updateMedia()
+        }
+        
+        public func resetTimer() {
+            setTimeInterval(timerInterval)
+        }
+        
+        private func setTimeInterval(_ interval: TimeInterval) {
+            if let timer = timer {
+                timer.invalidate()
+            }
+
+            let timer = Timer(fireAt: Date().addingTimeInterval(interval), interval: interval, target: self, selector: #selector(nextItem), userInfo: nil, repeats: true)
+            RunLoop.main.add(timer, forMode: .common)
+            self.timer = timer
         }
         
         private func setupVideoPlayer() {
@@ -85,15 +103,23 @@ struct SlideView: View {
         }
         
         private func updateMedia() {
+            if media.isEmpty { return }
+            
             player.removeAllItems()
             self.currentMedia = media[index]
             guard let current = self.currentMedia else { return }
             
             if current.url.pathExtension == "mp4" {
-                player.insert(AVPlayerItem(url: current.url), after: nil)
+                let item = AVPlayerItem(url: current.url)
+                player.insert(item, after: nil)
+                setTimeInterval(item.asset.duration.seconds)
+            }
+            else {
+                resetTimer()
             }
         }
         
+        @objc
         func nextItem() {
             index = Math.modulus(index + 1, media.count)
             updateMedia()
