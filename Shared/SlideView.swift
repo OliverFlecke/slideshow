@@ -40,22 +40,35 @@ struct SlideView: View {
     }
     
     var controlOverlayView: some View {
-        HStack {
-            Button(action: {
-                viewModel.resetTimer()
-                viewModel.previousItem()
-            }, label: { Image(systemName: "chevron.left") })
-            .padding()
-            .keyboardShortcut(.leftArrow, modifiers: [])
+        VStack {
+            Spacer()
+            HStack {
+                Button(action: {
+                    viewModel.resetTimer()
+                    viewModel.previousItem()
+                }, label: { Image(systemName: "chevron.left") })
+                .padding()
+                .keyboardShortcut(.leftArrow, modifiers: [])
+                    
+                Spacer()
                 
+                Button(action: {
+                    viewModel.resetTimer()
+                    viewModel.nextItem()
+                }, label: { Image(systemName: "chevron.right") })
+                .padding()
+                .keyboardShortcut(.rightArrow, modifiers: [])
+            }
             Spacer()
             
-            Button(action: {
-                viewModel.resetTimer()
-                viewModel.nextItem()
-            }, label: { Image(systemName: "chevron.right") })
-            .padding()
-            .keyboardShortcut(.rightArrow, modifiers: [])
+            HStack {
+                Spacer()
+                Button(action: viewModel.togglePlayPause, label: { Image(systemName: "playpause")})
+                    .padding()
+                    .keyboardShortcut("p", modifiers: [])
+                
+                Spacer()
+            }
         }
     }
     
@@ -76,6 +89,15 @@ struct SlideView: View {
         
         public func resetTimer() {
             setTimeInterval(timerInterval)
+        }
+        
+        public func togglePlayPause() {
+            if let timer = timer {
+                timer.invalidate()
+                self.timer = nil
+            } else {
+                resetTimer()
+            }
         }
         
         private func setTimeInterval(_ interval: TimeInterval) {
