@@ -41,6 +41,7 @@ struct SlideView: View {
     
     var controlOverlayView: some View {
         VStack {
+            durationControls
             Spacer()
             HStack {
                 Button(action: {
@@ -60,42 +61,81 @@ struct SlideView: View {
                 .keyboardShortcut(.rightArrow, modifiers: [])
             }
             Spacer()
-            
-            HStack {
-                Spacer()
-                Button(action: viewModel.togglePlayPause, label: { Image(systemName: "playpause")})
-                    .padding()
-                    .keyboardShortcut("p", modifiers: [])
-                
-                Spacer()
-            }
+        }
+    }
+    
+    var durationControls: some View {
+        HStack {
+            TextField("Duration", text: $viewModel.mediaDuration)
+                .background(.secondary)
+                .frame(width: 40)
+                .padding()
+                .onSubmit {
+                    DispatchQueue.main.async {
+                        NSApp.keyWindow?.makeFirstResponder(nil)
+                    }
+                }
+                .onAppear {
+                    DispatchQueue.main.async {
+                        NSApp.keyWindow?.makeFirstResponder(nil)
+                    }
+                }
+            Button(action: viewModel.togglePlayPause, label: { Image(systemName: "playpause")})
+                .padding()
+                .keyboardShortcut("p", modifiers: [])
+            Spacer()
         }
     }
     
     private class ViewModel: ObservableObject {
         let player = AVQueuePlayer()
         @Published var currentMedia: MediaElement?
-        @Published var timerInterval: TimeInterval = TimeInterval(5)
+        @Published var mediaDuration: String {
+            didSet {
+                let filtered = mediaDuration.filter { $0.isNumber }
+                
+                if filtered != mediaDuration {
+                    mediaDuration = filtered
+                }
+                else if let interval = TimeInterval(filtered) {
+                    self.timerInterval = interval
+                }
+            }
+        }
         
         private let media: [MediaElement]
         private var index = 0
         private var timer: Timer?
+        @AppStorage("duration") private var timerInterval: TimeInterval? {
+            didSet {
+                logger.info("didSet timerInterval to \(timerInterval ?? 0)")
+            }
+        }
         
         init(media: [MediaElement]) {
+            self.mediaDuration = "5"
             self.media = media
             setupVideoPlayer()
             updateMedia()
+            
+            if let timerInterval = timerInterval {
+                self.mediaDuration = timerInterval.formatted()
+            }
         }
         
         public func resetTimer() {
-            setTimeInterval(timerInterval)
+            setTimeInterval(timerInterval ?? 5)
         }
         
         public func togglePlayPause() {
             if let timer = timer {
+                logger.info("Pausing media")
+                player.pause()
                 timer.invalidate()
                 self.timer = nil
             } else {
+                logger.info("Starting media")
+                player.play()
                 resetTimer()
             }
         }
