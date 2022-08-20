@@ -70,6 +70,9 @@ struct MainView: View {
                 
                 if directory.startAccessingSecurityScopedResource() {
                     self.media = enumerateFiles(directory)
+                    for x in self.media[0...10] {
+                        logger.debug("Creation date: \(x.creationDate)")
+                    }
                 }
                 else {
                     logger.warning("Unable to access secure url")
@@ -82,12 +85,14 @@ struct MainView: View {
         
         func enumerateFiles(_ directory: URL) -> [MediaElement] {
             return FileManager.default
-                .enumerator(at: directory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles])?
+                .enumerator(at: directory, includingPropertiesForKeys: [.creationDateKey], options: [.skipsHiddenFiles])?
                 .filter { url in url is NSURL }
                 .map { url in (url as! NSURL).absoluteURL! }
                 .filter { ["png", "jpg", "gif", "mp4"].contains($0.pathExtension) }
                 .map { MediaElement($0) }
-                .shuffled() ?? []
+                .sorted(by: { a, b in a.creationDate.compare(b.creationDate) == ComparisonResult.orderedAscending })
+//                .shuffled()
+                ?? []
         }
     }
 }
