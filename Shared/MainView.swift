@@ -71,9 +71,6 @@ struct MainView: View {
                 
                 if directory.startAccessingSecurityScopedResource() {
                     self.media = enumerateFiles(directory)
-                    for x in self.media[0...10] {
-                        logger.debug("Creation date: \(x.creationDate)")
-                    }
                 }
                 else {
                     logger.warning("Unable to access secure url")
