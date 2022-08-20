@@ -53,6 +53,9 @@ struct SlideView: View {
                 Image(nsImage: NSImage(byReferencing: media.url))
                     .resizable()
                     .aspectRatio(contentMode: .fit)
+                    .onTapGesture {
+                        viewModel.index += offset
+                    }
             }
         }
     }
@@ -121,8 +124,16 @@ struct SlideView: View {
             }
         }
         
+        private var _index = 0
+        public var index: Int {
+            get { _index }
+            set {
+                _index = Math.modulus(newValue, media.count)
+                updateMedia()
+            }
+        }
+        
         private let media: [MediaElement]
-        public private(set) var index = 0
         private var timer: Timer?
         @AppStorage("duration") private var timerInterval: TimeInterval? {
             didSet {
@@ -205,13 +216,11 @@ struct SlideView: View {
         
         @objc
         func nextItem() {
-            index = Math.modulus(index + 1, media.count)
-            updateMedia()
+            index += 1
         }
         
         func previousItem() {
-            index = Math.modulus(index - 1, media.count)
-            updateMedia()
+            index -= 1
         }
     }
 }
