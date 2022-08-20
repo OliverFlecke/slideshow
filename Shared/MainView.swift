@@ -61,6 +61,7 @@ struct MainView: View {
     }
     
     private class ViewModel : ObservableObject {
+        private let supportedFiles = ["png", "jpg"] // , "gif", "mp4"]
         @Published var media: [MediaElement] = []
         
         func loadBookmark(bookmark: Data) {
@@ -88,7 +89,7 @@ struct MainView: View {
                 .enumerator(at: directory, includingPropertiesForKeys: [.creationDateKey], options: [.skipsHiddenFiles])?
                 .filter { url in url is NSURL }
                 .map { url in (url as! NSURL).absoluteURL! }
-                .filter { ["png", "jpg", "gif", "mp4"].contains($0.pathExtension) }
+                .filter { supportedFiles.contains($0.pathExtension) }
                 .map { MediaElement($0) }
                 .sorted(by: { a, b in a.creationDate.compare(b.creationDate) == ComparisonResult.orderedAscending })
 //                .shuffled()

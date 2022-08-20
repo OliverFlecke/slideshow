@@ -9,13 +9,20 @@ struct SlideView: View {
     }
     
     var body: some View {
-        ZStack {
+        Group {
             if viewModel.currentMedia == nil {
                 noMediaView
             }
             else {
-                mediaView
-                controlOverlayView
+                HStack{
+                    preview
+                    Spacer()
+                    ZStack {
+                        mediaView
+                        controlOverlayView
+                    }
+                    Spacer()
+                }
             }
         }
     }
@@ -35,6 +42,17 @@ struct SlideView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                 }
+            }
+        }
+    }
+    
+    var preview: some View {
+        VStack {
+            ForEach(-5..<5) { offset in
+                let media = viewModel.getRelativeMediaElement(offset: offset)
+                Image(nsImage: NSImage(byReferencing: media.url))
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
             }
         }
     }
@@ -104,7 +122,7 @@ struct SlideView: View {
         }
         
         private let media: [MediaElement]
-        private var index = 0
+        public private(set) var index = 0
         private var timer: Timer?
         @AppStorage("duration") private var timerInterval: TimeInterval? {
             didSet {
@@ -138,6 +156,10 @@ struct SlideView: View {
                 player.play()
                 resetTimer()
             }
+        }
+        
+        public func getRelativeMediaElement(offset: Int) -> MediaElement {
+            return self.media[Math.modulus(index + offset, media.count)]
         }
         
         private func setTimeInterval(_ interval: TimeInterval) {
