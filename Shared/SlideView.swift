@@ -38,7 +38,7 @@ struct SlideView: View {
                     VideoPlayer(player: viewModel.player)
                 }
                 else {
-                    Image(nsImage: NSImage(byReferencing: current.url))
+                    Image(nsImage: NSImage(byReferencing: current.url))	
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                 }
@@ -63,6 +63,11 @@ struct SlideView: View {
     var controlOverlayView: some View {
         VStack {
             durationControls
+            HStack {
+                Toggle("Shuffle", isOn: $viewModel.shuffle)
+                    .padding(.leading, 20)
+                Spacer()
+            }
             Spacer()
             HStack {
                 Button(action: {
@@ -110,6 +115,12 @@ struct SlideView: View {
     
     private class ViewModel: ObservableObject {
         let player = AVQueuePlayer()
+        @Published var shuffle: Bool = false {
+            didSet {
+                self.shuffleMedia()
+            }
+        }
+        
         @Published var currentMedia: MediaElement?
         @Published var mediaDuration: String {
             didSet {
@@ -133,7 +144,7 @@ struct SlideView: View {
             }
         }
         
-        private let media: [MediaElement]
+        private var media: [MediaElement]
         private var timer: Timer?
         @AppStorage("duration") private var timerInterval: TimeInterval? {
             didSet {
@@ -150,6 +161,16 @@ struct SlideView: View {
             if let timerInterval = timerInterval {
                 self.mediaDuration = timerInterval.formatted()
             }
+        }
+        
+        public func shuffleMedia() {
+            logger.info("Shuffle media \(self.shuffle)")
+            if shuffle {
+                self.media.shuffle()
+            } else {
+                self.media.sort(by: { a, z in a.creationDate.compare(z.creationDate) == .orderedAscending })
+            }
+            self.updateMedia()
         }
         
         public func resetTimer() {
