@@ -50,12 +50,18 @@ struct SlideView: View {
         VStack {
             ForEach(-5..<5) { offset in
                 let media = viewModel.getRelativeMediaElement(offset: offset)
-                Image(nsImage: NSImage(byReferencing: media.url))
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .onTapGesture {
-                        viewModel.index += offset
+                ZStack {
+                    if offset == 0 {
+                        Color.cyan
+                            .frame(width: 100)
                     }
+                    Image(nsImage: NSImage(byReferencing: media.url))
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .onTapGesture {
+                            viewModel.index += offset
+                        }
+                }
             }
         }
     }
